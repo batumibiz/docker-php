@@ -1,0 +1,12 @@
+/.env
+
+/.docker/mysql/logs/*
+!/.docker/mysql/logs/README.md
+
+/.docker/nginx/logs/*
+!/.docker/nginx/logs/README.md
+
+/.docker/php/logs/*
+!/.docker/php/logs/README.md
+
+/www/test.txt

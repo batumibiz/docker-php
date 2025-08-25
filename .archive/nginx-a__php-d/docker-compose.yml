@@ -1,0 +1,46 @@
+services:
+  nginx:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    volumes:
+      - ./www:/app/www
+      - ./.docker/nginx:/etc/nginx/conf.d
+      - ./.docker/ssl:/app/ssl
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - php
+      - db
+
+  php:
+    build: .docker/php
+    restart: unless-stopped
+    volumes:
+      - ./www:/app/www:cached
+    environment:
+      USER_ID: ${USER_ID:-1000}
+      GROUP_ID: ${GROUP_ID:-1000}
+
+  mail:
+    image: axllent/mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+
+  db:
+    image: mariadb:lts
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+      # Импорт дампа базы данных
+      - ./.docker/db/dump.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'testdb'
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+volumes:
+  db-data:

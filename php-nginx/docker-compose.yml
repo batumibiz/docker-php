@@ -1,0 +1,43 @@
+services:
+  php-nginx:
+    build:
+      context: .docker/php-nginx
+      args:
+        USER_ID: ${USER_ID:-1000}
+        GROUP_ID: ${GROUP_ID:-1000}
+    restart: unless-stopped
+    user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Web root and PHP scripts
+      - ./www:/var/www/html
+      # Log files
+      - ./.docker/log/nginx:/var/log/nginx
+      - ./.docker/log/php:/var/log/php84
+    environment:
+      TZ: Europe/Tbilisi
+
+  mail:
+    image: axllent/mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+
+  mysql:
+    image: mariadb:lts
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      # Импорт дампа данных (если есть) при инициализации контейнера.
+      - ./.docker/db-import:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'testdb'
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+volumes:
+  mysql-data:
