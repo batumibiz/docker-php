@@ -1,4 +1,4 @@
-name: docker-php
+name: d-a-p-m-m
 
 services:
   web:
