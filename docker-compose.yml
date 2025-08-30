@@ -1,0 +1,16 @@
+services:
+  web:
+    build:
+      context: ./docker/apache
+    ports:
+      - "80:80"
+    volumes:
+      - ./www:/var/www/html/www
+    depends_on:
+      - php
+
+  php:
+    build:
+      context: ./docker/php
+    volumes:
+      - ./www:/var/www/html/www
