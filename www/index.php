@@ -4,9 +4,10 @@ const TEST_DB = false;
 const TEST_MAIL = false;
 const TEST_FILE = true;
 const TEST_PHPINFO = true;
+const DIVIDER = '<hr style="width: 100%; margin: 2em 0">';
 
-echo "<h1>PHP " . phpversion() . " on Alpine 3.22</h1>";
-echo '<hr style="width: 100%; margin-bottom: 2em">';
+echo "<h1 style='padding-top: 1em'>PHP " . phpversion() . " on Alpine 3.22</h1>";
+echo DIVIDER;
 
 ////////////////////////////////////////////////////////////
 // Проверка подключения к базе данных                     //
@@ -23,6 +24,8 @@ if (TEST_DB) {
     } catch (PDOException $e) {
         echo "<h3 style='color:red'>❌ Ошибка БД: " . $e->getMessage() . "</h3>";
     }
+
+    echo DIVIDER;
 }
 
 ////////////////////////////////////////////////////////////
@@ -41,6 +44,8 @@ if (TEST_MAIL) {
     } else {
         echo "<h3 style='color:red'>❌ Не удалось отправить письмо</h3>";
     }
+
+    echo DIVIDER;
 }
 
 ////////////////////////////////////////////////////////////
@@ -55,6 +60,8 @@ if (TEST_FILE) {
     } else {
         echo '<h3 style="color:red">❌ Не удалось создать файл ' . $filename . '</h3>';
     }
+
+    echo DIVIDER;
 }
 
 ////////////////////////////////////////////////////////////
