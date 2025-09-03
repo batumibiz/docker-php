@@ -15,5 +15,5 @@ services:
     volumes:
       - ./www:/var/www/html
     environment:
-      UID: ${UID:-1000}
-      GID: ${GID:-1000}
+      USER_ID: ${USER_ID:-1000}
+      GROUP_ID: ${GROUP_ID:-1000}

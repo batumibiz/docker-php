@@ -1,9 +1,14 @@
 FROM php:8.3-fpm-alpine3.22
 
+# Получаем USER_ID и GROUP_ID из docker compose
+ARG USER_ID=1000
+ARG GROUP_ID=1000
+
 RUN apk update && apk upgrade
 
 # Установка необходимых библиотек
-RUN apk add \
+RUN apk add --no-cache \
+    shadow \
     zip \
     unzip \
     libpng-dev \
@@ -16,15 +21,9 @@ RUN docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp \
     && docker-php-ext-install gd pdo pdo_mysql mysqli opcache \
     && docker-php-ext-enable opcache
 
-ARG UID=1000
-ENV UID ${UID}
-ARG GID=1000
-ENV GID ${GID}
-
-RUN apk --no-cache add shadow && \
-    groupmod -o -g ${GID} www-data && \
-    usermod -o -u ${UID} -g www-data www-data
-
-WORKDIR /app
+RUN groupmod -o -g ${GROUP_ID} www-data && \
+    usermod -o -u ${USER_ID} -g www-data www-data
 
 RUN apk cache clean \
+
+WORKDIR /app
