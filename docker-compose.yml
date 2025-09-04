@@ -7,3 +7,12 @@ services:
       - "443:443"
     volumes:
       - ./www:/var/www/html
+
+  php:
+    build:
+      context: ./docker/php
+    volumes:
+      - ./www:/var/www/html
+    environment:
+      USER_ID: ${USER_ID:-1000}
+      GROUP_ID: ${GROUP_ID:-1000}
