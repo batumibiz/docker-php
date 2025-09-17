@@ -32,12 +32,14 @@ if (TEST_DB) {
 // Отправка тестового письма                              //
 ////////////////////////////////////////////////////////////
 if (TEST_MAIL) {
-    $to = 'test@example.com';
-    $subject = 'Тестовое письмо из Docker';
-    $message = 'Привет Это письмо отправлено через PHP mail() и перехвачено Mailhog.';
-    $headers = 'From: no-reply@local.dev' . "\r\n" .
-        'Reply-To: no-reply@local.dev' . "\r\n" .
-        'X-Mailer: PHP/' . phpversion();
+    $to = 'nobody@example.com';
+    $subject = 'the subject';
+    $message = 'hello';
+    $headers = [
+        'From'     => 'webmaster@example.com',
+        'Reply-To' => 'webmaster@example.com',
+        'X-Mailer' => 'PHP/' . phpversion()
+    ];
 
     if (mail($to, $subject, $message, $headers)) {
         echo "<h3 style='color:blue'>✅ Письмо отправлено Проверь Mailhog: <a href='http://localhost:8025' target='_blank'>http://localhost:8025</a></h3>";
