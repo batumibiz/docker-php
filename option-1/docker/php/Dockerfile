@@ -13,8 +13,7 @@ RUN apk update && apk add --no-cache \
     curl-dev \
     shadow \
     unzip \
-    zip \
-    msmtp
+    zip
 
 # Установка необходимых расширений
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp \
@@ -24,7 +23,6 @@ RUN docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp \
 # Копируем конфигурационные файлы
 COPY php.ini "$PHP_INI_DIR/conf.d/"
 COPY sendmail.ini "$PHP_INI_DIR/conf.d/"
-COPY msmtprc /etc/
 
 # Создаём пользователя с нужным UID/GID
 RUN groupmod -o -g ${GROUP_ID} www-data && \
