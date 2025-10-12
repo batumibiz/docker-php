@@ -4,8 +4,8 @@ services:
     restart: unless-stopped
     volumes:
       - ./www:/app/www
-      - ./docker/nginx:/etc/nginx/conf.d
-      - ./docker/ssl:/app/ssl
+      - ./.docker/nginx:/etc/nginx/conf.d
+      - ./.docker/ssl:/app/ssl
     ports:
       - "80:80"
       - "443:443"
@@ -15,7 +15,7 @@ services:
 
   php:
     build:
-      context: ./docker/php
+      context: ./.docker/php
     restart: unless-stopped
     volumes:
       - ./www:/app/www:cached
@@ -37,7 +37,7 @@ services:
     volumes:
       - db-data:/var/lib/mysql
       # Импорт дампа базы данных
-      - ./docker/db/dump.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./.docker/db/dump.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       MYSQL_ROOT_PASSWORD: 'root'
       MYSQL_DATABASE: 'testdb'
