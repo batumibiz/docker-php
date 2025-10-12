@@ -1,13 +1,20 @@
 services:
   apache:
-    build:
-      context: ./docker/apache
+    image: httpd:2.4-alpine
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./www:/var/www/html
+
+      - ./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./docker/apache/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
+
+      - ./docker/ssl/localhost.crt:/usr/local/apache2/conf/server.crt
+      - ./docker/ssl/localhost.key:/usr/local/apache2/conf/server.key
+    command:
+      - "httpd-foreground"
     depends_on:
       - php
       - db
@@ -22,7 +29,7 @@ services:
       USER_ID: ${USER_ID:-1000}
       GROUP_ID: ${GROUP_ID:-1000}
 
-  mailpit:
+  mail:
     image: axllent/mailpit
     restart: unless-stopped
     ports:
