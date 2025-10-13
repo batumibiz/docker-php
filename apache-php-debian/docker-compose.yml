@@ -1,30 +1,29 @@
 services:
   apache:
-    image: httpd:2.4-alpine
+    build:
+      context: ./.docker/apache
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./www:/var/www/html
+      - ./www:/app/www
 
-      - ./.docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
-      - ./.docker/apache/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
-
-      - ./.docker/ssl/localhost.crt:/usr/local/apache2/conf/server.crt
-      - ./.docker/ssl/localhost.key:/usr/local/apache2/conf/server.key
-    command:
-      - "httpd-foreground"
+      # Если нужны логи Apache, надо раскомментировать строку ниже
+      #- ./.docker/apache/logs:/app/logs/apache
     depends_on:
       - php
-      - db
+      - mysql
 
   php:
     build:
       context: ./.docker/php
     restart: unless-stopped
     volumes:
-      - ./www:/var/www/html:cached
+      - ./www:/app/www:cached
+
+      # Если нужны логи PHP, надо раскомментировать строку ниже
+      #- ./.docker/php/logs:/app/logs/php
     environment:
       USER_ID: ${USER_ID:-1000}
       GROUP_ID: ${GROUP_ID:-1000}
@@ -35,19 +34,28 @@ services:
     ports:
       - "8025:8025"
 
-  db:
+  mysql:
     image: mariadb:lts
     restart: unless-stopped
     ports:
       - "3306:3306"
     volumes:
-      - db-data:/var/lib/mysql
-      # Импорт дампа базы данных
-      - ./.docker/db/dump.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql-data:/var/lib/mysql
+
+      # Импорт дампа данных (если есть) при инициализации контейнера.
+      - ./.docker/mysql/dump:/docker-entrypoint-initdb.d
+
+      # Если используется кастомная конфигурация, то раскомментируем строку ниже.
+      #- ./.docker/mysql/config:/etc/mysql/conf.d
+
+      # Если нужны логи MySQL, надо раскомментировать строку ниже.
+      # Перед этим нужно включить логирование в конфигурационном файле MySQL.
+      # Без крайней необходимости логирование не включаем, плохо влияет на производительность.
+      #- ./.docker/mysql/logs:/var/log/mysql
     environment:
       MYSQL_ROOT_PASSWORD: 'root'
       MYSQL_DATABASE: 'testdb'
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
 volumes:
-  db-data:
+  mysql-data:

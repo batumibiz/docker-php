@@ -4,7 +4,7 @@ FROM php:8.3-fpm-alpine
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 
-# Создаём пользователя с нужным UID/GID
+# Назначаем USER_ID / GROUP_ID
 RUN apk update \
     && apk add --no-cache shadow \
     && groupmod -o -g ${GROUP_ID} www-data \

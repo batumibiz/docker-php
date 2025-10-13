@@ -22,11 +22,11 @@ RUN docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp \
     && docker-php-ext-enable gd pdo pdo_mysql mysqli curl opcache
 
 # Копируем конфигурационные файлы
-COPY php.ini "$PHP_INI_DIR/conf.d/"
-COPY sendmail.ini "$PHP_INI_DIR/conf.d/"
-COPY msmtprc /etc/
+COPY config/php.ini "$PHP_INI_DIR/conf.d/"
+COPY config/sendmail.ini "$PHP_INI_DIR/conf.d/"
+COPY config/msmtprc /etc/
 
-# Создаём пользователя с нужным UID/GID
+# Назначаем USER_ID / GROUP_ID
 RUN groupmod -o -g ${GROUP_ID} www-data && \
     usermod -o -u ${USER_ID} -g www-data www-data
 
