@@ -4,9 +4,11 @@ FROM php:8.3-fpm-alpine
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 
+# Обновление системы
+RUN apk update && apk upgrade
+
 # Назначаем USER_ID / GROUP_ID
-RUN apk update \
-    && apk add --no-cache shadow \
+RUN apk add --no-cache shadow \
     && groupmod -o -g ${GROUP_ID} www-data \
     && usermod -o -u ${USER_ID} -g www-data www-data
 

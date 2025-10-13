@@ -4,8 +4,11 @@ FROM php:8.3-fpm
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 
+# Обновление системы
+RUN apt-get update && apt-get upgrade -y
+
 # Установка необходимых библиотек
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get install -y --no-install-recommends \
     libpng-dev \
     libwebp-dev \
     libfreetype6-dev \
