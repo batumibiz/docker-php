@@ -4,14 +4,14 @@ services:
     restart: unless-stopped
     volumes:
       - ./www:/app/www
-      - ./.docker/nginx:/etc/nginx/conf.d
-      - ./.docker/ssl:/app/ssl
+      - ./.docker/nginx/config:/etc/nginx/conf.d
+      - ./.docker/nginx/ssl:/app/ssl
     ports:
       - "80:80"
       - "443:443"
     depends_on:
       - php
-      - db
+      - mysql
 
   php:
     build:
@@ -19,6 +19,9 @@ services:
     restart: unless-stopped
     volumes:
       - ./www:/app/www:cached
+
+      # Если нужны логи PHP, надо раскомментировать строку ниже
+      #- ./.docker/php/logs:/app/logs/php
     environment:
       USER_ID: ${USER_ID:-1000}
       GROUP_ID: ${GROUP_ID:-1000}
@@ -29,19 +32,28 @@ services:
     ports:
       - "8025:8025"
 
-  db:
+  mysql:
     image: mariadb:lts
     restart: unless-stopped
     ports:
       - "3306:3306"
     volumes:
-      - db-data:/var/lib/mysql
-      # Импорт дампа базы данных
-      - ./.docker/db/dump.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql-data:/var/lib/mysql
+
+      # Импорт дампа данных (если есть) при инициализации контейнера.
+      - ./.docker/mysql/dump:/docker-entrypoint-initdb.d
+
+      # Если используется кастомная конфигурация, то раскомментируем строку ниже.
+      #- ./.docker/mysql/config:/etc/mysql/conf.d
+
+      # Если нужны логи MySQL, надо раскомментировать строку ниже.
+      # Перед этим нужно включить логирование в конфигурационном файле MySQL.
+      # Без крайней необходимости логирование не включаем, плохо влияет на производительность.
+      #- ./.docker/mysql/logs:/var/log/mysql
     environment:
       MYSQL_ROOT_PASSWORD: 'root'
       MYSQL_DATABASE: 'testdb'
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
 volumes:
-  db-data:
+  mysql-data:
