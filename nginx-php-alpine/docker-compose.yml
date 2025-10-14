@@ -4,8 +4,12 @@ services:
     restart: unless-stopped
     volumes:
       - ./www:/app/www
+
       - ./.docker/nginx/config:/etc/nginx/conf.d
       - ./.docker/nginx/ssl:/app/ssl
+
+      # Если нужны логи PHP, надо раскомментировать строку ниже
+      #- ./.docker/nginx/logs:/var/log/nginx
     ports:
       - "80:80"
       - "443:443"
