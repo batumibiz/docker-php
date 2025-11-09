@@ -18,8 +18,7 @@ services:
       - mysql
 
   php:
-    build:
-      context: ./.docker/php
+    build: .docker/php
     restart: unless-stopped
     volumes:
       - ./www:/app/www:cached

@@ -1,7 +1,6 @@
 services:
   apache:
-    build:
-      context: ./.docker/apache
+    build: .docker/apache
     restart: unless-stopped
     ports:
       - "80:80"
@@ -16,8 +15,7 @@ services:
       - mysql
 
   php:
-    build:
-      context: ./.docker/php
+    build: .docker/php
     restart: unless-stopped
     volumes:
       - ./www:/app/www:cached
