@@ -18,14 +18,14 @@ RUN apk add --no-cache \
     libwebp-dev \
     freetype-dev \
     libjpeg-turbo-dev \
+    libzip-dev \
     curl-dev \
     unzip \
     zip
 
 # Установка необходимых расширений
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp \
-    && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql mysqli curl opcache \
-    && docker-php-ext-enable gd pdo pdo_mysql mysqli curl opcache
+    && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql mysqli curl zip opcache
 
 # Создаем папку для LOG файлов
 RUN mkdir -p /app/logs/php
