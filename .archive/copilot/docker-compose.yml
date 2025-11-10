@@ -1,0 +1,16 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        HOST_UID: ${UID:-1000}
+        HOST_GID: ${GID:-1000}
+    image: alpine-apache-php8.4
+    container_name: alpine_web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./www:/var/www/localhost/htdocs
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Tbilisi
