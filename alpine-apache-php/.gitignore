@@ -1,0 +1,8 @@
+/.env
+
+/.docker/logs/apache/*
+!/.docker/logs/apache/.gitkeep
+/.docker/logs/php/*
+!/.docker/logs/php/.gitkeep
+
+/www/test.txt
