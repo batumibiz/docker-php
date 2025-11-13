@@ -42,12 +42,12 @@ RUN addgroup -S -g ${GROUP_ID} app && \
     mkdir -p /app/www /run/apache2 /run/php && \
     chown -R app:app /var/www /app/www /run/apache2 /run/php
 
-# Копируем конфигурационные файлы Apache
+# Копируем конфигурацию Apache
 COPY config/httpd.conf /etc/apache2/httpd.conf
 COPY config/httpd-vhosts.conf /etc/apache2/conf.d/
 COPY config/httpd-ssl.conf /etc/apache2/conf.d/ssl.conf
 
-# Копируем конфигурационные файлы PHP
+# Копируем конфигурацию PHP
 COPY config/php-fpm.conf /etc/php84/php-fpm.d/www.conf
 COPY config/sendmail.ini /etc/php84/conf.d/
 COPY config/php.ini /etc/php84/php.ini

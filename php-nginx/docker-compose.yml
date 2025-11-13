@@ -1,7 +1,7 @@
 services:
-  apache-php:
+  php-nginx:
     build:
-      context: .docker/php-apache
+      context: .docker/php-nginx
       args:
         USER_ID: ${USER_ID:-1000}
         GROUP_ID: ${GROUP_ID:-1000}
@@ -12,14 +12,12 @@ services:
       - "443:443"
     volumes:
       # Web root and PHP scripts
-      - ./www:/app/www
+      - ./www:/var/www/html
       # Log files
-      - ./.docker/log/apache:/var/log/apache2
+      - ./.docker/log/nginx:/var/log/nginx
       - ./.docker/log/php:/var/log/php84
     environment:
       TZ: Europe/Tbilisi
-    depends_on:
-      - mysql
 
   mail:
     image: axllent/mailpit
