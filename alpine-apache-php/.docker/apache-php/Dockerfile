@@ -15,7 +15,6 @@ RUN apk add --no-cache \
     php84-curl \
     php84-mbstring \
     php84-xml \
-    php84-tokenizer \
     php84-fileinfo \
     php84-dom \
     php84-pdo \
@@ -35,9 +34,12 @@ RUN addgroup -S -g ${GROUP_ID} app && \
     chown -R app:app /var/www /app/www /run/apache2 /run/php /etc/ssl
 
 # Копируем конфигурационные файлы в контейнер
-COPY config/httpd.conf /etc/apache2/conf.d/
+COPY config/httpd.conf /etc/apache2/httpd.conf
 COPY config/httpd-vhosts.conf /etc/apache2/conf.d/
+COPY config/httpd-ssl.conf /etc/apache2/conf.d/ssl.conf
 COPY config/php-fpm.conf /etc/php84/php-fpm.d/www.conf
+COPY config/sendmail.ini /etc/php84/conf.d/
+COPY config/php.ini /etc/php84/php.ini
 
 # Копируем сертификаты
 COPY ssl/localhost.crt  /etc/ssl/certs/localhost.crt

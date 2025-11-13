@@ -1,7 +1,7 @@
 <?php
 
-const TEST_DB = false;
-const TEST_MAIL = false;
+const TEST_DB = true;
+const TEST_MAIL = true;
 const TEST_FILE = true;
 const TEST_PHPINFO = true;
 const DIVIDER = '<hr style="width: 100%; margin: 2em 0">';
