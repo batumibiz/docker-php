@@ -3,6 +3,7 @@ FROM alpine:3.22
 # Установка Apache, PHP 8.4 и нужных модулей
 RUN apk add --no-cache \
     apache2 \
+    apache2-ssl \
     apache2-proxy \
     php84 \
     php84-fpm \
@@ -30,23 +31,23 @@ ARG USER_ID=1000
 ARG GROUP_ID=1000
 RUN addgroup -S -g ${GROUP_ID} app && \
     adduser -S -D -H -u ${USER_ID} -G app app && \
-    mkdir -p /run/apache2 /run/php && \
-    chown -R app:app /var/www /run/apache2 /run/php
-#RUN groupmod -g ${GROUP_ID} apache && \
-#    usermod -u ${USER_ID} -g ${GROUP_ID} apache && \
-#    mkdir -p /run/apache2 /run/php && \
-#    chown -R apache:apache /var/www /run/apache2 /run/php
+    mkdir -p /app/www /run/apache2 /run/php && \
+    chown -R app:app /var/www /app/www /run/apache2 /run/php /etc/ssl
 
 # Копируем конфигурационные файлы в контейнер
-COPY config/httpd.conf /etc/apache2/
+COPY config/httpd.conf /etc/apache2/conf.d/
 COPY config/httpd-vhosts.conf /etc/apache2/conf.d/
 COPY config/php-fpm.conf /etc/php84/php-fpm.d/www.conf
 
+# Копируем сертификаты
+COPY ssl/localhost.crt  /etc/ssl/certs/localhost.crt
+COPY ssl/localhost.key  /etc/ssl/private/localhost.key
+
 # Рабочая директория
-WORKDIR /var/www/localhost/htdocs
+WORKDIR /app/www
 
 # Порт
-EXPOSE 80
+EXPOSE 80 443
 
 # Start PHP-FPM in background and Apache in foreground
 CMD ["/bin/sh", "-c", "php-fpm84 & httpd -D FOREGROUND"]
