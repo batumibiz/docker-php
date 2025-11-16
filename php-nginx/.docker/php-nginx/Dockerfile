@@ -32,9 +32,6 @@ RUN apk add --no-cache \
     php84-zip \
     tzdata
 
-# Директории
-#RUN mkdir -p /var/www/html /run/nginx /run/php
-
 # Синхронизация UID/GID с хостом
 ARG USER_ID=1000
 ARG GROUP_ID=1000

@@ -2,7 +2,7 @@ FROM alpine:3.22
 
 # Установка Apache, PHP 8.4 и нужных модулей
 # Обязательные модули: apache2, apache2-ssl, apache2-proxy, php84, php84-fpm,
-# остальные можно включать / выключать (комментируем выбранную строку #)
+# остальные можно включать / выключать по мере необходимости (комментируем выбранную строку #)
 RUN apk add --no-cache \
     apache2 \
     apache2-ssl \
@@ -64,4 +64,4 @@ WORKDIR /app/www
 EXPOSE 80 443
 
 # Start PHP-FPM in background and Apache in foreground
-CMD ["/bin/sh", "-c", "php-fpm84 & httpd -D FOREGROUND"]
+CMD ["sh", "-c", "php-fpm84 & httpd -D FOREGROUND"]
