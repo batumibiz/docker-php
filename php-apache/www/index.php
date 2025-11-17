@@ -42,7 +42,7 @@ if (TEST_MAIL) {
     ];
 
     if (mail($to, $subject, $message, $headers)) {
-        echo "<h3 style='color:blue'>✅ Письмо отправлено Проверь MailPit: <a href='http://localhost:8025' target='_blank'>http://localhost:8025</a></h3>";
+        echo "<h3 style='color:green'>✅ Письмо отправлено, проверь Mailpit: <a href='http://localhost:8025' target='_blank' style='color:blue'>http://localhost:8025</a></h3>";
     } else {
         echo "<h3 style='color:red'>❌ Не удалось отправить письмо</h3>";
     }

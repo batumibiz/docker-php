@@ -1,18 +1,18 @@
 FROM alpine:3.22
 
 # Установка Apache, PHP 8.4 и нужных модулей
-# Обязательные модули: apache2, apache2-ssl, apache2-proxy, php84, php84-fpm,
-# остальные можно включать / выключать по мере необходимости (комментируем выбранную строку #)
 RUN apk add --no-cache \
+    # Обязательные модули, без них контейнер неработоспособен
     apache2 \
     apache2-ssl \
     apache2-proxy \
     php84 \
+    php84-fpm \
+    # Опциональные модули, можно включать/выключать по мере необходимости (комментируем выбранную строку #)
     php84-ctype \
     php84-curl \
     #php84-dom \
     #php84-fileinfo \
-    php84-fpm \
     php84-gd \
     #php84-iconv \
     #php84-intl \
