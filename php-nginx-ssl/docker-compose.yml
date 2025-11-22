@@ -1,7 +1,7 @@
 services:
-  php-nginx:
+  web:
     build:
-      context: .docker/php-nginx
+      context: .docker/web
       args:
         USER_ID: ${USER_ID:-1000}
         GROUP_ID: ${GROUP_ID:-1000}
