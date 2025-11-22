@@ -1,7 +1,7 @@
 FROM alpine:3.22
 
 # Установка Apache, PHP 8.4 и нужных модулей
-RUN apk add --no-cache \
+RUN apk update && apk add --no-cache \
     # Обязательные модули, без них контейнер неработоспособен \
     apache2 \
     apache2-ssl \
