@@ -1,0 +1,6 @@
+/.env
+
+/.docker/log/*
+!/.docker/log/.gitkeep
+
+/www/test.txt
