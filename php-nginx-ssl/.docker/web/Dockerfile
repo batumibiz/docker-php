@@ -43,15 +43,21 @@ RUN addgroup -S -g ${GROUP_ID} app && \
 # Копируем конфигурацию Nginx
 COPY config/nginx.conf /etc/nginx/nginx.conf
 
-# Копируем конфигурацию PHP
-COPY config/php-fpm.conf /etc/php84/php-fpm.d/www.conf
-COPY config/sendmail.ini /etc/php84/conf.d/
+# Конфигурация PHP
 COPY config/php.ini /etc/php84/php.ini
+RUN sed -i 's/^;error_log = log\/php84\/error.log/error_log = log\/php84\/php-error.log/' /etc/php84/php-fpm.conf
+RUN sed -i 's/^listen = .*/listen = \/run\/php\/fpm.sock/' /etc/php84/php-fpm.d/www.conf && \
+    sed -i 's/^user = .*/;user = .*/' /etc/php84/php-fpm.d/www.conf && \
+    sed -i 's/^group = .*/;group = .*/' /etc/php84/php-fpm.d/www.conf && \
+    sed -i 's/^;listen.owner = nobody/listen.owner = app/' /etc/php84/php-fpm.d/www.conf && \
+    sed -i 's/^;listen.group = nobody/listen.group = app/' /etc/php84/php-fpm.d/www.conf && \
+    sed -i 's/^;listen.mode = 0660/listen.mode = 0660/' /etc/php84/php-fpm.d/www.conf
+RUN echo -e "SMTP = mail\nsmtp_port = 1025\nsendmail_path = /usr/sbin/sendmail -t -i -S mail:1025\n" > /etc/php84/conf.d/sendmail.ini
 
 # Копируем SSL сертификаты
-COPY ssl /etc/nginx/ssl
-RUN chown -R app:app /etc/nginx/ssl && \
-    chmod 600 /etc/nginx/ssl/localhost.key
+COPY ssl /etc/ssl/nginx
+RUN chown -R app:app /etc/ssl/nginx && \
+    chmod 600 /etc/ssl/nginx/localhost.key
 
 # Экспонируем порт
 EXPOSE 80 443

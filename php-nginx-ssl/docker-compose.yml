@@ -14,8 +14,8 @@ services:
       # Web root and PHP scripts
       - ./www:/var/www/html
       # Log files
-      - ./.docker/log/nginx:/var/log/nginx
-      - ./.docker/log/php:/var/log/php84
+      - ./.docker/log:/var/log/nginx
+      - ./.docker/log:/var/log/php84
     environment:
       TZ: Europe/Tbilisi
 
