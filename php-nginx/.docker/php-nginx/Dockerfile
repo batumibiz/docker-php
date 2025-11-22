@@ -54,7 +54,7 @@ RUN chown -R app:app /etc/nginx/ssl && \
     chmod 600 /etc/nginx/ssl/localhost.key
 
 # Экспонируем порт
-EXPOSE 443
+EXPOSE 80 443
 
 # Запуск: Nginx в фоне → PHP-FPM в foreground
 CMD ["sh", "-c", "nginx && php-fpm84 -F"]

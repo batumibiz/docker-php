@@ -1,7 +1,7 @@
 services:
-  apache-php:
+  web:
     build:
-      context: .docker/php-apache
+      context: .docker/web
       args:
         USER_ID: ${USER_ID:-1000}
         GROUP_ID: ${GROUP_ID:-1000}
@@ -14,8 +14,8 @@ services:
       # Web root and PHP scripts
       - ./www:/app/www
       # Log files
-      - ./.docker/log/apache:/var/log/apache2
-      - ./.docker/log/php:/var/log/php84
+      - ./.docker/log:/var/log/apache2
+      - ./.docker/log:/var/log/php84
     environment:
       TZ: Europe/Tbilisi
     depends_on:
