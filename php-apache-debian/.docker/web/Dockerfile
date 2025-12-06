@@ -27,7 +27,11 @@ RUN userdel www-data && \
     usermod -aG sudo www-data
 
 # Права на /var/www
-RUN chown -R ${USER_ID}:${GROUP_ID} /var/www
+RUN mkdir -p /var/log/php && \
+    chown -R ${USER_ID}:${GROUP_ID} /var/www /var/log/php
+
+# Конфигурация PHP
+COPY php.ini /usr/local/etc/php/conf.d/
 
 # Установка Xdebug
 #RUN pecl install xdebug && docker-php-ext-enable xdebug
