@@ -11,16 +11,16 @@ RUN apk update && apk add --no-cache \
     # Опциональные модули, можно включать/выключать по мере необходимости (комментируем выбранную строку #) \
     php84-ctype \
     php84-curl \
-    #php84-dom \
-    #php84-fileinfo \
+    php84-dom \
+    php84-fileinfo \
     php84-gd \
-    #php84-iconv \
-    #php84-intl \
+    php84-iconv \
+    php84-intl \
     php84-json \
     php84-mbstring \
     php84-mysqli \
     php84-opcache \
-    #php84-openssl \
+    php84-openssl \
     php84-pdo \
     php84-pdo_mysql \
     #php84-pdo_pgsql \
@@ -28,8 +28,9 @@ RUN apk update && apk add --no-cache \
     #php84-pgsql \
     #php84-phar \
     php84-session \
-    #php84-simplexml \
+    php84-simplexml \
     #php84-sqlite3 \
+    php84-tokenizer \
     php84-xml \
     php84-zip \
     tzdata
