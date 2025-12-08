@@ -1,4 +1,4 @@
-FROM alpine:3.22
+FROM alpine:3.23
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
@@ -36,7 +36,7 @@ RUN apk update && apk add --no-cache \
     php${PHP}-xml \
     php${PHP}-zip \
     tzdata \
-    && if [ "$PHP" < "85" ]; then apk add --no-cache php${PHP}-opcache; fi
+    && if [ $PHP = 82 -o $PHP = 83 -o $PHP = 84 ]; then apk add --no-cache php${PHP}-opcache; fi
 
 # Синхронизация UID/GID с хостом
 RUN addgroup -S -g ${GROUP_ID} app && \
