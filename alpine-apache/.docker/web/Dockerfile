@@ -4,14 +4,16 @@ ARG USER_ID=1000
 ARG GROUP_ID=1000
 ARG PHP=84
 
-# Установка Apache, PHP 8.4 и нужных модулей
-RUN apk update && apk add --no-cache \
-    # Обязательные модули, без них контейнер неработоспособен \
+# Installing Apache, PHP and additional modules
+RUN apk update && apk upgrade && apk add --no-cache \
+    # Required modules \
     apache2 \
+    apache2-ssl \
     apache2-proxy \
     php${PHP} \
     php${PHP}-fpm \
-    # Опциональные модули, можно включать/выключать по мере необходимости (комментируем выбранную строку #) \
+    tzdata \
+    # Optional modules, can be turned on/off as needed \
     php${PHP}-ctype \
     php${PHP}-curl \
     php${PHP}-dom \
@@ -27,30 +29,33 @@ RUN apk update && apk add --no-cache \
     php${PHP}-pdo_mysql \
     #php${PHP}-pdo_pgsql \
     #php${PHP}-pdo_sqlite \
+    php${PHP}-pecl-apcu \
+    php${PHP}-pecl-xdebug \
     #php${PHP}-pgsql \
-    #php${PHP}-phar \
+    php${PHP}-phar \
     php${PHP}-session \
     php${PHP}-simplexml \
     #php${PHP}-sqlite3 \
     php${PHP}-tokenizer \
     php${PHP}-xml \
+    php${PHP}-xmlwriter \
     php${PHP}-zip \
-    tzdata \
-    && if [ $PHP = 82 -o $PHP = 83 -o $PHP = 84 ]; then apk add --no-cache php${PHP}-opcache; fi
+    && if [ $PHP = 83 -o $PHP = 84 ]; then apk add --no-cache php${PHP}-opcache; fi
 
-# Синхронизация UID/GID с хостом
+# Synchronizing UID/GID with host
 RUN addgroup -S -g ${GROUP_ID} app && \
     adduser -S -D -H -u ${USER_ID} -G app app && \
-    mkdir -p /app/www /var/log/php /run/apache2 /run/php && \
-    chown -R app:app /var/www /app/www /var/log/php /run/apache2 /run/php
+    mkdir -p /app /var/log/php /var/log/xdebug /run/apache2 /run/php && \
+    chown -R app:app /var/www /app /var/log/php /var/log/xdebug /run/apache2 /run/php
 
-# Конфигурация Apache
+# Apache configuration
 COPY config/httpd.conf /etc/apache2/httpd.conf
 COPY config/httpd-vhosts.conf /etc/apache2/conf.d/
+RUN sed -i '/<VirtualHost _default_:443>/,$d' /etc/apache2/conf.d/ssl.conf
 
-# Конфигурация PHP
+# PHP configuration
 COPY config/php${PHP}.ini /etc/php${PHP}/php.ini
-RUN sed -i "s/^;error_log = log\/php${PHP}\/error.log/error_log = log\/php\/php-error.log/" /etc/php${PHP}/php-fpm.conf
+RUN sed -i "s/^;error_log = log\/php${PHP}\/error.log/error_log = log\/php\/php-fpm.log/" /etc/php${PHP}/php-fpm.conf
 RUN sed -i 's/^listen = .*/listen = \/run\/php\/fpm.sock/' /etc/php${PHP}/php-fpm.d/www.conf && \
     sed -i 's/^user = .*/;user = .*/' /etc/php${PHP}/php-fpm.d/www.conf && \
     sed -i 's/^group = .*/;group = .*/' /etc/php${PHP}/php-fpm.d/www.conf && \
@@ -59,11 +64,17 @@ RUN sed -i 's/^listen = .*/listen = \/run\/php\/fpm.sock/' /etc/php${PHP}/php-fp
     sed -i 's/^;listen.mode = 0660/listen.mode = 0660/' /etc/php${PHP}/php-fpm.d/www.conf
 RUN echo -e "SMTP = mail\nsmtp_port = 1025\nsendmail_path = /usr/sbin/sendmail -t -i -S mail:1025\n" > /etc/php${PHP}/conf.d/sendmail.ini
 
-# Рабочая директория
-WORKDIR /app/www
+# XDebug configuration
+COPY config/xdebug.ini /etc/php${PHP}/conf.d/50_xdebug.ini
 
-# Порт
-EXPOSE 80
+# Copy SSL certificates
+COPY ssl/localhost.key  /etc/ssl/apache2/server.key
+COPY ssl/localhost.crt  /etc/ssl/apache2/server.pem
+RUN chown -R app:app /etc/ssl/apache2 && \
+    chmod 600 /etc/ssl/apache2/server.key
+
+WORKDIR /app
+EXPOSE 80 443
 
 # Start PHP-FPM in background and Apache in foreground
 ENV PHP=${PHP}

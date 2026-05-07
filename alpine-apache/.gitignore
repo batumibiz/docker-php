@@ -1,3 +1,9 @@
-/.docker/log/*
-!/.docker/log/.gitkeep
-/www/test.txt
+/.idea
+
+# Docker files
+/.docker/log/apache/*
+!/.docker/log/apache/.gitkeep
+/.docker/log/php/*
+!/.docker/log/php/.gitkeep
+/.docker/log/xdebug/*
+!/.docker/log/xdebug/.gitkeep

@@ -57,8 +57,13 @@ RUN sed -i 's/^listen = .*/listen = \/run\/php\/fpm.sock/' /etc/php${PHP}/php-fp
     sed -i 's/^;listen.mode = 0660/listen.mode = 0660/' /etc/php${PHP}/php-fpm.d/www.conf
 RUN echo -e "SMTP = mail\nsmtp_port = 1025\nsendmail_path = /usr/sbin/sendmail -t -i -S mail:1025\n" > /etc/php${PHP}/conf.d/sendmail.ini
 
+# Копируем SSL сертификаты
+COPY ssl /etc/ssl/nginx
+RUN chown -R app:app /etc/ssl/nginx && \
+    chmod 600 /etc/ssl/nginx/localhost.key
+
 # Экспонируем порт
-EXPOSE 80
+EXPOSE 80 443
 
 # Запуск: Nginx в фоне → PHP-FPM в foreground
 ENV PHP=${PHP}
