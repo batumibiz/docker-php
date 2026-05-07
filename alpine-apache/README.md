@@ -11,6 +11,13 @@
 > Without WSL 2, file system performance will be extremely slow, making the application nearly unusable.
 > Docker Desktop will typically prompt you to enable WSL 2 during installation.
 
+> [!IMPORTANT]
+>
+> **Environment Compatibility**  
+> The main Docker container is based on Alpine Linux.
+> Please note that GLOB_BRACE is not supported in the Alpine/musl environment.
+> Avoid using this flag in your project or use Debian based environments instead.
+
 > [!NOTE]
 >
 > - The `make` commands are only available on Linux / macOS / Windows WSL 2.
@@ -37,45 +44,27 @@
 ### Or using Docker CLI
 - Start all services
     ```bash
-    docker-compose up -d
+    docker compose up -d
     ```
 
 ### Docker Environment
 
 The project environment will be available at the following addresses:
-- **Storefront**: https://localhost
-    - Login: `user@example.com`
-    - Password: `testuser`
-- **Administration**: https://localhost/admin
-    - Login: `admin`
-    - Password: `admin`
-    - Email: `test@example.com`
+- **WEB**:
+  - HTTP: http://localhost
+  - HTTPS (SSL): https://localhost
 - **Mailpit** (Email Testing): http://localhost:8025
+- MySQL (MariaDB):
+  - Host: `mysql`
+  - Username: `root`
+  - Password: `root`
+  - Database: `database`
 - **Logs**: all service logs (Web server, PHP, etc.) are accessible in the `.docker/log` directory for easy debugging.
 
-> [!NOTE]
->
-> **No Installation Required**  
-> Once the Docker services are up and running, you get a fully functional OpenCart instance immediately.
-
-> [!IMPORTANT]
->
-> **Environment Compatibility**  
-> The main Docker container is based on Alpine Linux.
-> Please note that GLOB_BRACE is not supported in the Alpine/musl environment.
-> Avoid using this flag in your extensions. As a built-in workaround, you can use the oc_glob() emulator provided in this repository.
-
 ### SSL Configuration
-The project is configured to use **SSL (HTTPS)** by default. To prevent browser connection errors, please choose one of the following options:
+To prevent browser connection errors, please choose one of the following options:
 - **Install CA Certificate**: Import the CA certificate located at `.docker/web/ssl/ca.crt` into your operating system's trusted store.
 - **Or use Custom Certificates**: Replace the existing `.docker/web/ssl/localhost.crt` and `.docker/web/ssl/localhost.key` with your own generated certificates for `localhost`.
-
-### Disabling SSL
-If you prefer to use standard HTTP, you can disable SSL by modifying the following configuration files:
-- `www/config.php`: change `https` to `http` on line 6.
-- `www/admin/config.php`: change `https` to `http` on lines 6 and 7.
-
-After these changes, the store will be accessible via http://localhost and http://localhost/admin.
 
 ### Profiling with XDebug
 You can perform detailed profiling using XDebug to analyze the performance of all subsystems and identify bottlenecks. To enable this, follow these steps:
